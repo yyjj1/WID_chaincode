@@ -15,48 +15,65 @@ import com.owlike.genson.annotation.JsonProperty;
 public final class Asset {
 
     @Property()
-    private final String assetID;
+    private final String did;
 
     @Property()
-    private final String color;
+    private final String name;
 
     @Property()
-    private final int size;
+    private final String studentID;
 
     @Property()
-    private final String owner;
+    private final String term;
 
     @Property()
-    private final int appraisedValue;
+    private final String summary;
 
-    public String getAssetID() {
-        return assetID;
+    @Property()
+    private final String subject;
+
+    @Property()
+    private final String professor;
+
+    public String getDid() {
+        return did;
     }
 
-    public String getColor() {
-        return color;
+    public String getName() {
+        return name;
     }
 
-    public int getSize() {
-        return size;
+    public String getStudentID() {
+        return studentID;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getTerm() {
+        return term;
     }
 
-    public int getAppraisedValue() {
-        return appraisedValue;
+    public String getSummary() {
+        return summary;
     }
 
-    public Asset(@JsonProperty("assetID") final String assetID, @JsonProperty("color") final String color,
-            @JsonProperty("size") final int size, @JsonProperty("owner") final String owner,
-            @JsonProperty("appraisedValue") final int appraisedValue) {
-        this.assetID = assetID;
-        this.color = color;
-        this.size = size;
-        this.owner = owner;
-        this.appraisedValue = appraisedValue;
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getProfessor() {
+        return professor;
+    }
+
+    public Asset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
+                 @JsonProperty("studentID") final String studentID, @JsonProperty("term") final String term,
+                 @JsonProperty("summary") final String summary, @JsonProperty("subject") final String subject,
+                 @JsonProperty("professor") final String professor) {
+        this.did = did;
+        this.name = name;
+        this.studentID = studentID;
+        this.term = term;
+        this.summary = summary;
+        this.subject = subject;
+        this.professor = professor;
     }
 
     @Override
@@ -72,22 +89,22 @@ public final class Asset {
         Asset other = (Asset) obj;
 
         return Objects.deepEquals(
-                new String[] {getAssetID(), getColor(), getOwner()},
-                new String[] {other.getAssetID(), other.getColor(), other.getOwner()})
-                &&
-                Objects.deepEquals(
-                new int[] {getSize(), getAppraisedValue()},
-                new int[] {other.getSize(), other.getAppraisedValue()});
+                new String[] {getDid(), getName(), getTerm(), getSubject(), getStudentID(), getSummary(), getProfessor()},
+                new String[] {other.getDid(), other.getName(), other.getTerm(), other.getSubject(), other.getStudentID(),
+                        other.getSummary(), other.getProfessor()});
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAssetID(), getColor(), getSize(), getOwner(), getAppraisedValue());
+        return Objects.hash(getDid(), getName(), getStudentID(), getTerm(), getSummary(), getSubject(), getProfessor());
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [assetID=" + assetID + ", color="
-                + color + ", size=" + size + ", owner=" + owner + ", appraisedValue=" + appraisedValue + "]";
+        return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [did=" + did + ", name="
+                + name + ", studentID=" + studentID + ", term=" + term + ", summary=" + summary
+                + ", subject=" + subject + ", professor=" + professor + "]";
+
     }
 }
