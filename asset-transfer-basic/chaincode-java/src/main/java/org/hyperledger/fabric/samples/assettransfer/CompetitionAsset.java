@@ -35,6 +35,9 @@ public final class CompetitionAsset {
     @Property()
     private final String term;
 
+    @Property()
+    private final String type;
+
     public String getDid() {
         return did;
     }
@@ -63,6 +66,10 @@ public final class CompetitionAsset {
         return term;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public CompetitionAsset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
                             @JsonProperty("competitionName") final String competitionName, @JsonProperty("achievement") final String achievement,
                             @JsonProperty("organizer") final String organizer, @JsonProperty("summary") final String summary,
@@ -74,6 +81,7 @@ public final class CompetitionAsset {
         this.organizer = organizer;
         this.summary = summary;
         this.term = term;
+        this.type = "CompetitionAsset";
     }
 
     @Override
@@ -104,7 +112,7 @@ public final class CompetitionAsset {
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [did=" + did + ", name="
                 + name + ", competitionName=" + competitionName + ", achievement=" + achievement + ", organizer=" + organizer
-                + ", summary=" + summary + ", term=" + term + "]";
+                + ", summary=" + summary + ", term=" + term + ", type=" + type + "]";
 
     }
 }

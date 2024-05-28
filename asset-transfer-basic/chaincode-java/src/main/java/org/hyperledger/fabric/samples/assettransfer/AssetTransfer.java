@@ -255,4 +255,28 @@ public final class AssetTransfer implements ContractInterface {
 
         return response;
     }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String GetAllEntries(final Context ctx) {
+        ChaincodeStub stub = ctx.getStub();
+
+        List<Object> queryResults = new ArrayList<>();
+
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
+
+        for (KeyValue result: results) {
+            String json = result.getStringValue();
+            if (json.contains("\"type\":\"CompetitionAsset\"")) {
+                CompetitionAsset competitionAsset = genson.deserialize(json, CompetitionAsset.class);
+                queryResults.add(competitionAsset);
+            } else {
+                Asset asset = genson.deserialize(json, Asset.class);
+                queryResults.add(asset);
+            }
+        }
+
+        final String response = genson.serialize(queryResults);
+
+        return response;
+    }
 }

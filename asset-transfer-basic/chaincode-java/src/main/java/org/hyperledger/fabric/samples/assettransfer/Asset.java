@@ -35,6 +35,9 @@ public final class Asset {
     @Property()
     private final String professor;
 
+    @Property()
+    private final String type;
+
     public String getDid() {
         return did;
     }
@@ -63,6 +66,10 @@ public final class Asset {
         return professor;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public Asset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
                  @JsonProperty("studentID") final String studentID, @JsonProperty("term") final String term,
                  @JsonProperty("summary") final String summary, @JsonProperty("subject") final String subject,
@@ -74,6 +81,7 @@ public final class Asset {
         this.summary = summary;
         this.subject = subject;
         this.professor = professor;
+        this.type = "Asset";
     }
 
     @Override
@@ -104,7 +112,7 @@ public final class Asset {
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [did=" + did + ", name="
                 + name + ", studentID=" + studentID + ", term=" + term + ", summary=" + summary
-                + ", subject=" + subject + ", professor=" + professor + "]";
+                + ", subject=" + subject + ", professor=" + professor + ", type=" + type + "]";
 
     }
 }
