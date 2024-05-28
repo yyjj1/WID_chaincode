@@ -51,34 +51,34 @@ public final class AssetTransfer implements ContractInterface {
     public void InitLedger(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
 
-        CreateAsset(ctx, new Asset("did1", "김서연", "202146147", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateAsset(ctx, new Asset("did2", "남준성", "202146739", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateAsset(ctx, new Asset("did3", "손영빈", "201917708", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateAsset(ctx, new Asset("did4", "이용준", "201917716", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateAsset(ctx, new Asset("did5", "한은규", "201911114", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateAsset(ctx, new Asset("did6", "홍길동", "202312345", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did1", "김서연", "202146147", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did2", "남준성", "202146739", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did3", "손영빈", "201917708", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did4", "이용준", "201917716", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did5", "한은규", "201911114", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
+        CreateUnivClassAsset(ctx, new UnivClassAsset("did6", "홍길동", "202312345", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
         CreateCompetitionAsset(ctx, new CompetitionAsset("did7", "유재석", "아이디어해커톤", "1st place", "전북대학교 소프트웨어공학과", "블록체인기반폴관리서비스", "2024/05/05"));
         CreateCompetitionAsset(ctx, new CompetitionAsset("did8", "박명수", "아이디어해커톤", "2nd place", "전북대학교 소프트웨어공학과", "의류관리서비스", "2024/05/05"));
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Asset CreateAsset(final Context ctx, final Asset asset) {
+    public UnivClassAsset CreateUnivClassAsset(final Context ctx, final UnivClassAsset univClassAsset) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (AssetExists(ctx, asset.getDid())) {
-            String errorMessage = String.format("Asset %s already exists", asset.getDid());
+        if (AssetExists(ctx, univClassAsset.getDid())) {
+            String errorMessage = String.format("Asset %s already exists", univClassAsset.getDid());
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        String sortedJson = genson.serialize(asset);
-        stub.putStringState(asset.getDid(), sortedJson);
+        String sortedJson = genson.serialize(univClassAsset);
+        stub.putStringState(univClassAsset.getDid(), sortedJson);
 
-        return asset;
+        return univClassAsset;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Asset ReadAsset(final Context ctx, final String did) {
+    public UnivClassAsset ReadAsset(final Context ctx, final String did) {
         ChaincodeStub stub = ctx.getStub();
         String assetJSON = stub.getStringState(did);
 
@@ -88,23 +88,23 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        Asset asset = genson.deserialize(assetJSON, Asset.class);
-        return asset;
+        UnivClassAsset univClassAsset = genson.deserialize(assetJSON, UnivClassAsset.class);
+        return univClassAsset;
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Asset UpdateAsset(final Context ctx, final Asset asset) {
+    public UnivClassAsset UpdateAsset(final Context ctx, final UnivClassAsset univClassAsset) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (!AssetExists(ctx, asset.getDid())) {
-            String errorMessage = String.format("Asset %s does not exist", asset.getDid());
+        if (!AssetExists(ctx, univClassAsset.getDid())) {
+            String errorMessage = String.format("Asset %s does not exist", univClassAsset.getDid());
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        String sortedJson = genson.serialize(asset);
-        stub.putStringState(asset.getDid(), sortedJson);
-        return asset;
+        String sortedJson = genson.serialize(univClassAsset);
+        stub.putStringState(univClassAsset.getDid(), sortedJson);
+        return univClassAsset;
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
@@ -139,28 +139,28 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        Asset asset = genson.deserialize(assetJSON, Asset.class);
+        UnivClassAsset univClassAsset = genson.deserialize(assetJSON, UnivClassAsset.class);
 
-        Asset newAsset = new Asset(asset.getDid(), asset.getName(), asset.getStudentID(), newTerm, asset.getSummary(),
-                asset.getSubject(), asset.getProfessor());
-        String sortedJson = genson.serialize(newAsset);
+        UnivClassAsset newUnivClassAsset = new UnivClassAsset(univClassAsset.getDid(), univClassAsset.getName(), univClassAsset.getStudentID(), newTerm, univClassAsset.getSummary(),
+                univClassAsset.getSubject(), univClassAsset.getProfessor());
+        String sortedJson = genson.serialize(newUnivClassAsset);
         stub.putStringState(did, sortedJson);
 
-        return asset.getTerm();
+        return univClassAsset.getTerm();
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public String GetAllAssets(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
 
-        List<Asset> queryResults = new ArrayList<Asset>();
+        List<UnivClassAsset> queryResults = new ArrayList<UnivClassAsset>();
 
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
 
         for (KeyValue result: results) {
-            Asset asset = genson.deserialize(result.getStringValue(), Asset.class);
-            System.out.println(asset);
-            queryResults.add(asset);
+            UnivClassAsset univClassAsset = genson.deserialize(result.getStringValue(), UnivClassAsset.class);
+            System.out.println(univClassAsset);
+            queryResults.add(univClassAsset);
         }
 
         final String response = genson.serialize(queryResults);
@@ -270,13 +270,11 @@ public final class AssetTransfer implements ContractInterface {
                 CompetitionAsset competitionAsset = genson.deserialize(json, CompetitionAsset.class);
                 queryResults.add(competitionAsset);
             } else {
-                Asset asset = genson.deserialize(json, Asset.class);
-                queryResults.add(asset);
+                UnivClassAsset univClassAsset = genson.deserialize(json, UnivClassAsset.class);
+                queryResults.add(univClassAsset);
             }
         }
-
         final String response = genson.serialize(queryResults);
-
         return response;
     }
 }

@@ -12,7 +12,7 @@ import org.hyperledger.fabric.contract.annotation.Property;
 import com.owlike.genson.annotation.JsonProperty;
 
 @DataType()
-public final class Asset {
+public final class UnivClassAsset {
 
     @Property()
     private final String did;
@@ -70,10 +70,10 @@ public final class Asset {
         return type;
     }
 
-    public Asset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
-                 @JsonProperty("studentID") final String studentID, @JsonProperty("term") final String term,
-                 @JsonProperty("summary") final String summary, @JsonProperty("subject") final String subject,
-                 @JsonProperty("professor") final String professor) {
+    public UnivClassAsset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
+                          @JsonProperty("studentID") final String studentID, @JsonProperty("term") final String term,
+                          @JsonProperty("summary") final String summary, @JsonProperty("subject") final String subject,
+                          @JsonProperty("professor") final String professor) {
         this.did = did;
         this.name = name;
         this.studentID = studentID;
@@ -81,7 +81,7 @@ public final class Asset {
         this.summary = summary;
         this.subject = subject;
         this.professor = professor;
-        this.type = "Asset";
+        this.type = "UnivClassAsset";
     }
 
     @Override
@@ -94,7 +94,7 @@ public final class Asset {
             return false;
         }
 
-        Asset other = (Asset) obj;
+        UnivClassAsset other = (UnivClassAsset) obj;
 
         return Objects.deepEquals(
                 new String[] {getDid(), getName(), getTerm(), getSubject(), getStudentID(), getSummary(), getProfessor()},

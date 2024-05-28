@@ -1,7 +1,7 @@
 
 ## Basic Asset Transfer 
 
-This sample implements the basic asset transfer scenario, illustrating the use of the Java Contract SDKs to provide a 
+This sample implements the basic univClassAsset transfer scenario, illustrating the use of the Java Contract SDKs to provide a 
 smart contract as a service.  
 
 To run this chaincode contract locally on a development network, see: 
