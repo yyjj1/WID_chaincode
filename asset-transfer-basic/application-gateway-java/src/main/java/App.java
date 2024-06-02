@@ -52,7 +52,7 @@ public final class App {
 	private static final String OVERRIDE_AUTH = "peer0.org1.example.com";
 
 	private final Contract contract;
-	private final String assetId = "asset" + Instant.now().toEpochMilli();
+	private final String assetId = "did" + Instant.now().toEpochMilli();
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void main(final String[] args) throws Exception {
@@ -68,10 +68,13 @@ public final class App {
 				.commitStatusOptions(options -> options.withDeadlineAfter(1, TimeUnit.MINUTES));
 
 		try (var gateway = builder.connect()) {
-			new App(gateway).run();
+			var app = new App(gateway);
+			app.createUnivClassAsset("did10", "하하", "202012345", "2024", "블록체인", "캡스톤");
+			app.run();
 		} finally {
 			channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
 		}
+
 	}
 
 	private static ManagedChannel newGrpcConnection() throws IOException {
@@ -117,10 +120,11 @@ public final class App {
 		initLedger();
 
 		// Return all the current assets on the ledger.
-		getAllAssets();
+		getAllEntries();
 
 		// Create a new asset on the ledger.
-		createAsset();
+		createUnivClassAsset(assetId, "John Doe", "202312345", "2024/03/02~2024/06/21", "Blockchain Portfolio Management", "Capstone");
+		createCompetitionAsset();
 
 		// Update an existing asset asynchronously.
 		transferAssetAsync();
@@ -131,7 +135,7 @@ public final class App {
 		// Update an asset which does not exist.
 		updateNonExistentAsset();
 	}
-	
+
 	/**
 	 * This type of transaction would typically only be run once by an application
 	 * the first time it was started after its initial deployment. A new version of
@@ -148,11 +152,11 @@ public final class App {
 	/**
 	 * Evaluate a transaction to query ledger state.
 	 */
-	private void getAllAssets() throws GatewayException {
-		System.out.println("\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger");
+	private void getAllEntries() throws GatewayException {
+		System.out.println("\n--> Evaluate Transaction: GetAllEntries, function returns all the current assets on the ledger");
 
-		var result = contract.evaluateTransaction("GetAllAssets");
-		
+		var result = contract.evaluateTransaction("GetAllEntries");
+
 		System.out.println("*** Result: " + prettyJson(result));
 	}
 
@@ -169,10 +173,18 @@ public final class App {
 	 * Submit a transaction synchronously, blocking until it has been committed to
 	 * the ledger.
 	 */
-	private void createAsset() throws EndorseException, SubmitException, CommitStatusException, CommitException {
-		System.out.println("\n--> Submit Transaction: CreateAsset, creates new asset with ID, Color, Size, Owner and AppraisedValue arguments");
+	private void createUnivClassAsset(String assetId, String name, String studentID, String term, String summary, String subject) throws EndorseException, SubmitException, CommitStatusException, CommitException {
+		System.out.println("\n--> Submit Transaction: CreateUnivClassAsset, creates new UnivClassAsset with did, name, studentID, term, summary, subject arguments");
 
-		contract.submitTransaction("CreateAsset", assetId, "yellow", "5", "Tom", "1300");
+		contract.submitTransaction("CreateUnivClassAsset", assetId, name, studentID, term, summary, subject);
+
+		System.out.println("*** Transaction committed successfully");
+	}
+
+	private void createCompetitionAsset() throws EndorseException, SubmitException, CommitStatusException, CommitException {
+		System.out.println("\n--> Submit Transaction: CreateCompetitionAsset, creates new CompetitionAsset with did, name, competitionName, achievement, organizer, summary arguments");
+
+		contract.submitTransaction("CreateCompetitionAsset", "comp" + Instant.now().toEpochMilli(), "Jane Doe", "K-Hackathon", "1st place", "JBNU Software Engineering", "Blockchain-based service");
 
 		System.out.println("*** Transaction committed successfully");
 	}
@@ -183,18 +195,18 @@ public final class App {
 	 * notification.
 	 */
 	private void transferAssetAsync() throws EndorseException, SubmitException, CommitStatusException {
-		System.out.println("\n--> Async Submit Transaction: TransferAsset, updates existing asset owner");
+		System.out.println("\n--> Async Submit Transaction: TransferAsset, updates existing asset term");
 
 		var commit = contract.newProposal("TransferAsset")
-				.addArguments(assetId, "Saptha")
+				.addArguments(assetId, "2024/06/22~2024/09/21")
 				.build()
 				.endorse()
 				.submitAsync();
 
 		var result = commit.getResult();
-		var oldOwner = new String(result, StandardCharsets.UTF_8);
+		var oldTerm = new String(result, StandardCharsets.UTF_8);
 
-		System.out.println("*** Successfully submitted transaction to transfer ownership from " + oldOwner + " to Saptha");
+		System.out.println("*** Successfully submitted transaction to transfer term from " + oldTerm + " to 2024/06/22~2024/09/21");
 		System.out.println("*** Waiting for transaction commit");
 
 		var status = commit.getStatus();
@@ -202,15 +214,15 @@ public final class App {
 			throw new RuntimeException("Transaction " + status.getTransactionId() +
 					" failed to commit with status code " + status.getCode());
 		}
-		
+
 		System.out.println("*** Transaction committed successfully");
 	}
 
 	private void readAssetById() throws GatewayException {
-		System.out.println("\n--> Evaluate Transaction: ReadAsset, function returns asset attributes");
+		System.out.println("\n--> Evaluate Transaction: ReadUnivClassAsset, function returns asset attributes");
 
-		var evaluateResult = contract.evaluateTransaction("ReadAsset", assetId);
-		
+		var evaluateResult = contract.evaluateTransaction("ReadUnivClassAsset", assetId);
+
 		System.out.println("*** Result:" + prettyJson(evaluateResult));
 	}
 
@@ -220,10 +232,10 @@ public final class App {
 	 */
 	private void updateNonExistentAsset() {
 		try {
-			System.out.println("\n--> Submit Transaction: UpdateAsset asset70, asset70 does not exist and should return an error");
-			
-			contract.submitTransaction("UpdateAsset", "asset70", "blue", "5", "Tomoko", "300");
-			
+			System.out.println("\n--> Submit Transaction: UpdateUnivClassAsset did70, did70 does not exist and should return an error");
+
+			contract.submitTransaction("UpdateUnivClassAsset", "did70", "Jane Doe", "202346789", "2024/03/02~2024/06/21", "Blockchain Portfolio Management", "Capstone");
+
 			System.out.println("******** FAILED to return an error");
 		} catch (EndorseException | SubmitException | CommitStatusException e) {
 			System.out.println("*** Successfully caught the error: ");

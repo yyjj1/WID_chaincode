@@ -45,40 +45,41 @@ public final class AssetTransfer implements ContractInterface {
         ASSET_ALREADY_EXISTS
     }
 
-    // Existing methods for Asset
-
+    // Initialization method
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void InitLedger(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
 
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did1", "김서연", "202146147", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did2", "남준성", "202146739", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did3", "손영빈", "201917708", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did4", "이용준", "201917716", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did5", "한은규", "201911114", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateUnivClassAsset(ctx, new UnivClassAsset("did6", "홍길동", "202312345", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤", "김순태"));
-        CreateCompetitionAsset(ctx, new CompetitionAsset("did7", "유재석", "아이디어해커톤", "1st place", "전북대학교 소프트웨어공학과", "블록체인기반폴관리서비스", "2024/05/05"));
-        CreateCompetitionAsset(ctx, new CompetitionAsset("did8", "박명수", "아이디어해커톤", "2nd place", "전북대학교 소프트웨어공학과", "의류관리서비스", "2024/05/05"));
+        CreateUnivClassAsset(ctx, "did1", "김서연", "202146147", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateUnivClassAsset(ctx, "did2", "남준성", "202146739", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateUnivClassAsset(ctx, "did3", "손영빈", "201917708", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateUnivClassAsset(ctx, "did4", "이용준", "201917716", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateUnivClassAsset(ctx, "did5", "한은규", "201911114", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateUnivClassAsset(ctx, "did6", "홍길동", "202312345", "2024/03/02~2024/06/21", "블록체인기반포폴관리", "캡스톤");
+        CreateCompetitionAsset(ctx, "did7", "유재석", "아이디어해커톤", "1st place", "전북대학교 소프트웨어공학과", "블록체인기반폴관리서비스");
+        CreateCompetitionAsset(ctx, "did8", "박명수", "아이디어해커톤", "2nd place", "전북대학교 소프트웨어공학과", "의류관리서비스");
     }
 
+    // UnivClassAsset methods
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public UnivClassAsset CreateUnivClassAsset(final Context ctx, final UnivClassAsset univClassAsset) {
+    public UnivClassAsset CreateUnivClassAsset(final Context ctx, final String did, final String name, final String studentID, final String term, final String summary, final String subject) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (AssetExists(ctx, univClassAsset.getDid())) {
-            String errorMessage = String.format("Asset %s already exists", univClassAsset.getDid());
+        if (AssetExists(ctx, did)) {
+            String errorMessage = String.format("Asset %s already exists", did);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
+        UnivClassAsset univClassAsset = new UnivClassAsset(did, name, studentID, term, summary, subject);
         String sortedJson = genson.serialize(univClassAsset);
-        stub.putStringState(univClassAsset.getDid(), sortedJson);
+        stub.putStringState(did, sortedJson);
 
         return univClassAsset;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public UnivClassAsset ReadAsset(final Context ctx, final String did) {
+    public UnivClassAsset ReadUnivClassAsset(final Context ctx, final String did) {
         ChaincodeStub stub = ctx.getStub();
         String assetJSON = stub.getStringState(did);
 
@@ -93,22 +94,23 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public UnivClassAsset UpdateAsset(final Context ctx, final UnivClassAsset univClassAsset) {
+    public UnivClassAsset UpdateUnivClassAsset(final Context ctx, final String did, final String name, final String studentID, final String term, final String summary, final String subject) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (!AssetExists(ctx, univClassAsset.getDid())) {
-            String errorMessage = String.format("Asset %s does not exist", univClassAsset.getDid());
+        if (!AssetExists(ctx, did)) {
+            String errorMessage = String.format("Asset %s does not exist", did);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
+        UnivClassAsset univClassAsset = new UnivClassAsset(did, name, studentID, term, summary, subject);
         String sortedJson = genson.serialize(univClassAsset);
-        stub.putStringState(univClassAsset.getDid(), sortedJson);
+        stub.putStringState(did, sortedJson);
         return univClassAsset;
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void DeleteAsset(final Context ctx, final String did) {
+    public void DeleteUnivClassAsset(final Context ctx, final String did) {
         ChaincodeStub stub = ctx.getStub();
 
         if (!AssetExists(ctx, did)) {
@@ -120,16 +122,8 @@ public final class AssetTransfer implements ContractInterface {
         stub.delState(did);
     }
 
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean AssetExists(final Context ctx, final String did) {
-        ChaincodeStub stub = ctx.getStub();
-        String assetJSON = stub.getStringState(did);
-
-        return (assetJSON != null && !assetJSON.isEmpty());
-    }
-
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public String TransferAsset(final Context ctx, final String did, final String newTerm) {
+    public String TransferUnivClassAsset(final Context ctx, final String did, final String newTerm) {
         ChaincodeStub stub = ctx.getStub();
         String assetJSON = stub.getStringState(did);
 
@@ -142,7 +136,7 @@ public final class AssetTransfer implements ContractInterface {
         UnivClassAsset univClassAsset = genson.deserialize(assetJSON, UnivClassAsset.class);
 
         UnivClassAsset newUnivClassAsset = new UnivClassAsset(univClassAsset.getDid(), univClassAsset.getName(), univClassAsset.getStudentID(), newTerm, univClassAsset.getSummary(),
-                univClassAsset.getSubject(), univClassAsset.getProfessor());
+                univClassAsset.getSubject());
         String sortedJson = genson.serialize(newUnivClassAsset);
         stub.putStringState(did, sortedJson);
 
@@ -150,7 +144,7 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String GetAllAssets(final Context ctx) {
+    public String GetAllUnivClassAssets(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
 
         List<UnivClassAsset> queryResults = new ArrayList<UnivClassAsset>();
@@ -168,20 +162,20 @@ public final class AssetTransfer implements ContractInterface {
         return response;
     }
 
-    // New methods for CompetitionAsset
-
+    // CompetitionAsset methods
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public CompetitionAsset CreateCompetitionAsset(final Context ctx, final CompetitionAsset competitionAsset) {
+    public CompetitionAsset CreateCompetitionAsset(final Context ctx, final String did, final String name, final String competitionName, final String achievement, final String organizer, final String summary) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (CompetitionAssetExists(ctx, competitionAsset.getDid())) {
-            String errorMessage = String.format("CompetitionAsset %s already exists", competitionAsset.getDid());
+        if (CompetitionAssetExists(ctx, did)) {
+            String errorMessage = String.format("CompetitionAsset %s already exists", did);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
+        CompetitionAsset competitionAsset = new CompetitionAsset(did, name, competitionName, achievement, organizer, summary);
         String sortedJson = genson.serialize(competitionAsset);
-        stub.putStringState(competitionAsset.getDid(), sortedJson);
+        stub.putStringState(did, sortedJson);
 
         return competitionAsset;
     }
@@ -202,17 +196,18 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public CompetitionAsset UpdateCompetitionAsset(final Context ctx, final CompetitionAsset competitionAsset) {
+    public CompetitionAsset UpdateCompetitionAsset(final Context ctx, final String did, final String name, final String competitionName, final String achievement, final String organizer, final String summary) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (!CompetitionAssetExists(ctx, competitionAsset.getDid())) {
-            String errorMessage = String.format("CompetitionAsset %s does not exist", competitionAsset.getDid());
+        if (!CompetitionAssetExists(ctx, did)) {
+            String errorMessage = String.format("CompetitionAsset %s does not exist", did);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
+        CompetitionAsset competitionAsset = new CompetitionAsset(did, name, competitionName, achievement, organizer, summary);
         String sortedJson = genson.serialize(competitionAsset);
-        stub.putStringState(competitionAsset.getDid(), sortedJson);
+        stub.putStringState(did, sortedJson);
         return competitionAsset;
     }
 
@@ -256,6 +251,7 @@ public final class AssetTransfer implements ContractInterface {
         return response;
     }
 
+    // Combined method to get all entries
     @Transaction(intent = Transaction.TYPE.EVALUATE)
     public String GetAllEntries(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
@@ -276,5 +272,13 @@ public final class AssetTransfer implements ContractInterface {
         }
         final String response = genson.serialize(queryResults);
         return response;
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public boolean AssetExists(final Context ctx, final String did) {
+        ChaincodeStub stub = ctx.getStub();
+        String assetJSON = stub.getStringState(did);
+
+        return (assetJSON != null && !assetJSON.isEmpty());
     }
 }

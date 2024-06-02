@@ -32,8 +32,8 @@ public final class CompetitionAsset {
     @Property()
     private final String summary;
 
-    @Property()
-    private final String term;
+//    @Property()
+//    private final String term;
 
     @Property()
     private final String type;
@@ -62,9 +62,9 @@ public final class CompetitionAsset {
         return summary;
     }
 
-    public String getTerm() {
-        return term;
-    }
+//    public String getTerm() {
+//        return term;
+//    }
 
     public String getType() {
         return type;
@@ -72,15 +72,14 @@ public final class CompetitionAsset {
 
     public CompetitionAsset(@JsonProperty("did") final String did, @JsonProperty("name") final String name,
                             @JsonProperty("competitionName") final String competitionName, @JsonProperty("achievement") final String achievement,
-                            @JsonProperty("organizer") final String organizer, @JsonProperty("summary") final String summary,
-                            @JsonProperty("term") final String term) {
+                            @JsonProperty("organizer") final String organizer, @JsonProperty("summary") final String summary) {
         this.did = did;
         this.name = name;
         this.competitionName = competitionName;
         this.achievement = achievement;
         this.organizer = organizer;
         this.summary = summary;
-        this.term = term;
+//        this.term = term;
         this.type = "CompetitionAsset";
     }
 
@@ -97,22 +96,22 @@ public final class CompetitionAsset {
         CompetitionAsset other = (CompetitionAsset) obj;
 
         return Objects.deepEquals(
-                new String[]{getDid(), getName(), getCompetitionName(), getAchievement(), getOrganizer(), getSummary(), getTerm()},
+                new String[]{getDid(), getName(), getCompetitionName(), getAchievement(), getOrganizer(), getSummary()},
                 new String[]{other.getDid(), other.getName(), other.getCompetitionName(), other.getAchievement(), other.getOrganizer(),
-                        other.getSummary(), other.getTerm()});
+                        other.getSummary()});
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDid(), getName(), getCompetitionName(), getAchievement(), getOrganizer(), getSummary(), getTerm());
+        return Objects.hash(getDid(), getName(), getCompetitionName(), getAchievement(), getOrganizer(), getSummary());
     }
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [did=" + did + ", name="
                 + name + ", competitionName=" + competitionName + ", achievement=" + achievement + ", organizer=" + organizer
-                + ", summary=" + summary + ", term=" + term + ", type=" + type + "]";
+                + ", summary=" + summary + type + "]";
 
     }
 }
