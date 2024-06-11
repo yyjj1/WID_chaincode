@@ -32,9 +32,6 @@ public final class CompetitionAsset {
     @Property()
     private final String summary;
 
-//    @Property()
-//    private final String term;
-
     @Property()
     private final String type;
 
@@ -62,10 +59,6 @@ public final class CompetitionAsset {
         return summary;
     }
 
-//    public String getTerm() {
-//        return term;
-//    }
-
     public String getType() {
         return type;
     }
@@ -79,9 +72,9 @@ public final class CompetitionAsset {
         this.achievement = achievement;
         this.organizer = organizer;
         this.summary = summary;
-//        this.term = term;
         this.type = "CompetitionAsset";
     }
+
 
     @Override
     public boolean equals(final Object obj) {
@@ -99,8 +92,9 @@ public final class CompetitionAsset {
                 new String[]{getDid(), getName(), getCompetitionName(), getAchievement(), getOrganizer(), getSummary()},
                 new String[]{other.getDid(), other.getName(), other.getCompetitionName(), other.getAchievement(), other.getOrganizer(),
                         other.getSummary()});
-
     }
+
+
 
     @Override
     public int hashCode() {
@@ -111,7 +105,8 @@ public final class CompetitionAsset {
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [did=" + did + ", name="
                 + name + ", competitionName=" + competitionName + ", achievement=" + achievement + ", organizer=" + organizer
-                + ", summary=" + summary + type + "]";
+                + ", summary=" + summary + ", type=" + type + "]";
 
     }
+
 }

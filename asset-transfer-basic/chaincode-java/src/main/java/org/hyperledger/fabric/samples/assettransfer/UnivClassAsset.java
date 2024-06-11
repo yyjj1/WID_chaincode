@@ -32,9 +32,6 @@ public final class UnivClassAsset {
     @Property()
     private final String subject;
 
-//    @Property()
-//    private final String professor;
-
     @Property()
     private final String type;
 
@@ -62,10 +59,6 @@ public final class UnivClassAsset {
         return subject;
     }
 
-//    public String getProfessor() {
-//        return professor;
-//    }
-
     public String getType() {
         return type;
     }
@@ -79,7 +72,6 @@ public final class UnivClassAsset {
         this.term = term;
         this.summary = summary;
         this.subject = subject;
-//        this.professor = professor;
         this.type = "UnivClassAsset";
     }
 
